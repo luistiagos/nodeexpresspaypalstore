@@ -209,6 +209,10 @@ app.post(`/create-payment`, createPayment)
 app.get(`/execute-payment`, executePayment)
 
 
+app.get('/test', (req, res) => {
+	res.json({ data: {id: 123} })
+})
+
 //--------------------------------- SUBSCRIPCIONES --------------------------------------
 
 /**
@@ -231,6 +235,6 @@ app.post(`/generate-subscription`, generateSubscription)
 
 
 
-app.listen(3000, () => {
+app.listen(80, () => {
     console.log(`Comenzemos a generar dinero --> http://localhost:3000`);
 })
