@@ -2,7 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const request = require('request');
 const emailer = require('./mail');
-const requestIp = require('request-ip');
+
+const propertiesReader = require('properties-reader');
+var properties = propertiesReader('../props.txt');
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -19,7 +21,7 @@ app.use(cors())
 const CLIENT = 'AWreWRc4QZFBpialedogiTk3GZT53fUWMib5Tdqn540XuIj_vV2mKpLPhBFAaP3pzkObd0C9Mmw-w0F5';
 const SECRET = 'EBNtCZ9jUu4RztOQA2RSStxCLXKhZNUAdB_4OOjO88cBv9ivEgenzHu4fLVLAXD1Vgjx_aT4ZdNML4xB';
 const PAYPAL_API = 'https://api-m.sandbox.paypal.com'; // Live https://api-m.paypal.com
-const HOST = 'localhost';
+const HOST = properties.get('ip');
 const PORT = 3000;
 const BASE_URL = 'http://' + HOST + ':' + PORT;
 
@@ -214,8 +216,7 @@ app.get(`/execute-payment`, executePayment)
 
 
 app.get('/test', (req, res) => {
-    const idAddress = requestIp.getClientIp(req);
-	res.send(idAddress);
+	res.send(HOST);
 })
 
 //--------------------------------- SUBSCRIPCIONES --------------------------------------
