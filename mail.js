@@ -1,10 +1,13 @@
 const nodemailer = require('nodemailer');
 const nodemailerSendgrid = require('nodemailer-sendgrid');
 
+const propertiesReader = require('properties-reader');
+var properties = propertiesReader('../props.txt');
+
 const createTransport = () => {
     const transport = nodemailer.createTransport(
         nodemailerSendgrid({
-            apiKey:'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'
+            apiKey: properties.get('sendgrid-key')
         })
     );
     return transport;
