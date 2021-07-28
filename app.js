@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const request = require('request');
-const emailer = require('./mail')
+const emailer = require('./mail');
+const requestIp = require('request-ip');
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -18,6 +19,9 @@ app.use(cors())
 const CLIENT = 'AWreWRc4QZFBpialedogiTk3GZT53fUWMib5Tdqn540XuIj_vV2mKpLPhBFAaP3pzkObd0C9Mmw-w0F5';
 const SECRET = 'EBNtCZ9jUu4RztOQA2RSStxCLXKhZNUAdB_4OOjO88cBv9ivEgenzHu4fLVLAXD1Vgjx_aT4ZdNML4xB';
 const PAYPAL_API = 'https://api-m.sandbox.paypal.com'; // Live https://api-m.paypal.com
+const HOST = 'localhost';
+const PORT = 3000;
+const BASE_URL = 'http://' + HOST + ':' + PORT;
 
 const auth = { user: CLIENT, pass: SECRET }
 
@@ -51,8 +55,8 @@ const createPayment = (req, res) => {
             brand_name: `MiTienda.com`,
             landing_page: 'NO_PREFERENCE', // Default, para mas informacion https://developer.paypal.com/docs/api/orders/v2/#definition-order_application_context
             user_action: 'PAY_NOW', // Accion para que en paypal muestre el monto del pago
-            return_url: `http://localhost:3000/execute-payment`, // Url despues de realizar el pago
-            cancel_url: `http://localhost:3000/cancel-payment` // Url despues de realizar el pago
+            return_url: BASE_URL + '/execute-payment', // Url despues de realizar el pago
+            cancel_url: BASE_URL + '/cancel-payment' // Url despues de realizar el pago
         }
     }
     //https://api-m.sandbox.paypal.com/v2/checkout/orders [POST]
@@ -179,8 +183,8 @@ const generateSubscription = (req, res) => {
             },
             email_address: "customer@example.com",
         },
-        return_url: 'http://localhost/gracias',
-        cancel_url: 'http://localhost/fallo'
+        return_url: BASE_URL + '/gracias',
+        cancel_url: BASE_URL + '/fallo'
 
     }
     request.post(`${PAYPAL_API}/v1/billing/subscriptions`, {
@@ -210,7 +214,8 @@ app.get(`/execute-payment`, executePayment)
 
 
 app.get('/test', (req, res) => {
-	res.json({ data: {id: 123} })
+    const idAddress = requestIp.getClientIp(req);
+	res.send(idAddress);
 })
 
 //--------------------------------- SUBSCRIPCIONES --------------------------------------
@@ -235,6 +240,6 @@ app.post(`/generate-subscription`, generateSubscription)
 
 
 
-app.listen(3000, () => {
-    console.log(`Comenzemos a generar dinero --> http://localhost:3000`);
+app.listen(PORT, () => {
+    console.log(`Comenzemos a generar dinero --> ` + BASE_URL);
 })
