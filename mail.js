@@ -14,7 +14,6 @@ const createTransport = () => {
 };
 
 const sendEmail = async () => {
-    console.log('sendgrid-key: ',properties.get('sendgrid-key'));
     const transporter = createTransport();
     const info = await transporter.sendMail({
         from: 'luistiago.andrighetto@gmail.com',
